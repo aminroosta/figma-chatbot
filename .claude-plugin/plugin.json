@@ -1,5 +1,5 @@
 {
-  "name": "figma-chatbot",
-  "description": "Claude Code commands for the local Figma bridge.",
+  "name": "fig",
+  "description": "Execute JavaScript in Figma via local WebSocket bridge.",
   "version": "0.1.0"
 }

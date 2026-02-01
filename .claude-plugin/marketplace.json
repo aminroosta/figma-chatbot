@@ -1,11 +1,11 @@
 {
-  "name": "figma-chatbot",
+  "name": "fig",
   "owner": { "name": "aminrsoota" },
   "plugins": [
     {
-      "name": "figma-chatbot",
+      "name": "fig",
       "source": "./",
-      "description": "Execute JavaScript in Figma documents via local WebSocket bridge"
+      "description": "Execute JavaScript in Figma via local WebSocket bridge"
     }
   ]
 }

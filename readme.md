@@ -27,7 +27,7 @@ Add the marketplace, then install:
 
 ```sh
 /plugin marketplace add aminrsoota/figma-chatbot
-/plugin install figma-chatbot@aminrsoota-figma-chatbot
+/plugin install fig@fig
 ```
 
 Or load locally for development:
@@ -41,9 +41,9 @@ claude --plugin-dir ./figma-chatbot
 
 1. Open Figma Desktop app with a design file open
 2. **Plugins → Development → Import plugin from manifest**
-3. Select `~/.claude/plugins/aminrsoota-figma-chatbot/figma-chatbot/chatbot/` (contains `manifest.json`)
+3. Select `~/.claude/plugins/fig/fig/chatbot/` (contains `manifest.json`)
 4. Press `Cmd+/`, search "chatbot", press enter to launch; keep the plugin window open
-5. In Claude Code CLI, use `/figma-chatbot:figma` to interact with Figma Desktop app.
+5. In Claude Code CLI, use `/fig:go` to evaluate JS in Figma
 
 The plugin UI shows connection state, client ID, and current document/page selected.
 
@@ -51,17 +51,17 @@ The plugin UI shows connection state, client ID, and current document/page selec
 
 | Command | Purpose |
 |---------|---------|
-| `/figma-chatbot:figma-setup` | Verify Bun, confirm plugin folder, print Figma import instructions |
-| `/figma-chatbot:figma` | Start daemon if needed, evaluate JS in connected Figma client |
+| `/fig:setup` | Verify Bun, confirm plugin folder, print Figma import instructions |
+| `/fig:go` | Start daemon if needed, evaluate JS in connected Figma client |
 
-### `/figma-chatbot:figma`
+### `/fig:go`
 
 With no arguments, reports daemon status and connected clients.
 
 With JS (inline or fenced block):
 
 ```
-/figma-chatbot:figma
+/fig:go
 figma.currentPage.selection
 ```
 
@@ -79,8 +79,8 @@ See [docs/architecture.md](docs/architecture.md) for protocol details, data flow
 .claude-plugin/
   plugin.json                # Claude Code plugin manifest
   marketplace.json           # Marketplace catalog for distribution
-skills/figma-setup/          # /figma-setup command
-skills/figma/                # /figma command
+skills/setup/                # /fig:setup
+skills/go/                   # /fig:go
 figma.ts                     # CLI client (status/start/stop/eval)
 figma-daemon.ts              # WebSocket server on 127.0.0.1:7017
 chatbot/                     # Figma dev plugin (manifest, ui.html, code.js)
@@ -94,7 +94,7 @@ docs/                        # Architecture, cheatsheets
 | `bun: command not found` | Install Bun, restart shell |
 | Daemon running but "no clients" | Open Figma, import + run the dev plugin |
 | Port 7017 in use | `bun figma.ts stop` or kill stale process via `/tmp/figma-chatbot.pid` |
-| Plugin UI says "disconnected" | Daemon not running; `/figma-chatbot:figma` auto-starts it |
+| Plugin UI says "disconnected" | Daemon not running; `/fig:go` auto-starts it |
 
 ## License
 
