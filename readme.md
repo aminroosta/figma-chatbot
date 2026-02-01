@@ -319,7 +319,7 @@ Connection health:
 ## Suggested Next Steps
 
 - [x] Scaffold the Figma dev plugin in `chatbot/` (`manifest.json`, `ui.html`, `code.js`) with a small visible status UI (connected/disconnected, `clientId`, label).
-- [ ] Implement `figma-daemon.ts`: WS server on `127.0.0.1:7017`, PID `/tmp/figma-chatbot.pid`, logs `/tmp/figma-chatbot.log`, role handshake, client registry, request routing by `id`, parallel in-flight evals, 30s timeout, graceful shutdown/cleanup.
+- [x] Implement `figma-daemon.ts`: WS server on `127.0.0.1:7017`, PID `/tmp/figma-chatbot.pid`, logs `/tmp/figma-chatbot.log`, role handshake, client registry, request routing by `id`, parallel in-flight evals, 30s timeout, graceful shutdown/cleanup.
 - [ ] Implement `figma.ts` executable: `status/start/restart/stop/eval`, strict `--client <id|index>` when >1 client, heredoc JS input, JSON output `{ ok, result|error, logs }`.
 - [x] Wire `chatbot/ui.html` to the daemon: reconnect with exponential backoff + jitter, handshake `{ role: "figma-ui", clientId, label }`, forward `eval_request` to `code.js` and return `eval_response` (including `logs`).
 - [x] Implement evaluator in `chatbot/code.js`: async wrapper `(async ({ figma, helpers }) => { ... })`, `helpers.notify` + `helpers.serializeNode`, capture `console.log` into `logs`, serialize errors.
