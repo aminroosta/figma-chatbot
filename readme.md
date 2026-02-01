@@ -26,14 +26,14 @@ A Claude Code plugin that lets Claude execute JavaScript directly in your Figma 
 Add the marketplace, then install:
 
 ```sh
-/plugin marketplace add aminrsoota/figma-chatbot
+/plugin marketplace add aminroosta/figma-chatbot
 /plugin install fig@fig
 ```
 
 Or load locally for development:
 
 ```sh
-git clone https://github.com/aminrsoota/figma-chatbot.git
+git clone https://github.com/aminroosta/figma-chatbot.git
 claude --plugin-dir ./figma-chatbot
 ```
 
