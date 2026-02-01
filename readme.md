@@ -19,7 +19,8 @@ A Claude Code plugin that lets Claude execute JavaScript directly in your Figma 
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) runtime
+- [bun](https://bun.sh) runtime
+  - Can be installed with `curl -fsSL https://bun.sh/install | bash`
 
 ## Claude Code Setup
 
