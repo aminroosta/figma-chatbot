@@ -1,17 +1,352 @@
-<h2>Rectangle Creator</h2>
-<p>Count: <input id="count" type="number" value="5"></p>
-<button id="create">Create</button>
-<button id="cancel">Cancel</button>
-<script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Figma Bridge</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6efe6;
+        --bg-accent: #f1e2d4;
+        --card: #fff7ef;
+        --ink: #2b1b12;
+        --muted: #6f5b4d;
+        --border: rgba(43, 27, 18, 0.15);
+        --shadow: rgba(43, 27, 18, 0.12);
+        --accent: #c26b3d;
+        --good: #2f8a4f;
+        --bad: #b24c3f;
+      }
 
-document.getElementById('create').onclick = () => {
-  const textbox = document.getElementById('count');
-  const count = parseInt(textbox.value, 10);
-  parent.postMessage({ pluginMessage: { type: 'create-shapes', count } }, '*')
-}
+      * {
+        box-sizing: border-box;
+      }
 
-document.getElementById('cancel').onclick = () => {
-  parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*')
-}
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top left, var(--bg-accent), transparent 60%),
+          linear-gradient(160deg, var(--bg), #fdf7f1 65%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+      }
 
-</script>
+      .card {
+        width: 100%;
+        max-width: 320px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: 0 12px 24px var(--shadow);
+        padding: 16px;
+        display: grid;
+        gap: 12px;
+        animation: float-in 240ms ease-out;
+      }
+
+      @keyframes float-in {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .header {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--bad);
+        box-shadow: 0 0 0 4px rgba(178, 76, 63, 0.18);
+        transition: background 200ms ease, box-shadow 200ms ease;
+      }
+
+      .dot[data-state="connecting"] {
+        background: var(--accent);
+        box-shadow: 0 0 0 4px rgba(194, 107, 61, 0.18);
+      }
+
+      .dot[data-state="connected"] {
+        background: var(--good);
+        box-shadow: 0 0 0 4px rgba(47, 138, 79, 0.18);
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.18);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .title {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .details {
+        display: grid;
+        gap: 8px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 12px;
+        line-height: 1.4;
+      }
+
+      .label {
+        color: var(--muted);
+        min-width: 60px;
+      }
+
+      .value {
+        text-align: right;
+        font-weight: 600;
+        word-break: break-word;
+      }
+
+      .footer {
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <header class="header">
+        <div class="dot" data-connection data-state="disconnected"></div>
+        <div>
+          <div class="title">Figma Bridge</div>
+          <div class="subtitle" data-status>Disconnected</div>
+        </div>
+      </header>
+      <section class="details">
+        <div class="row">
+          <span class="label">Client</span>
+          <span class="value" data-client-id>...</span>
+        </div>
+        <div class="row">
+          <span class="label">Label</span>
+          <span class="value" data-label>Waiting for Figma context...</span>
+        </div>
+      </section>
+      <footer class="footer">
+        <span data-last-event>Waiting for daemon...</span>
+      </footer>
+    </main>
+    <script>
+      const WS_URL = "ws://localhost:7017/";
+      const clientIdKey = "figma-chatbot-client-id";
+      const statusEl = document.querySelector("[data-status]");
+      const dotEl = document.querySelector("[data-connection]");
+      const clientIdEl = document.querySelector("[data-client-id]");
+      const labelEl = document.querySelector("[data-label]");
+      const lastEventEl = document.querySelector("[data-last-event]");
+
+      const state = {
+        socket: null,
+        reconnectAttempt: 0,
+        reconnectTimer: null,
+        label: "Waiting for Figma context...",
+        clientId: null,
+      };
+
+      function getOrCreateClientId() {
+        const stored = localStorage.getItem(clientIdKey);
+        if (stored) {
+          return stored;
+        }
+
+        const generated =
+          (window.crypto && crypto.randomUUID && crypto.randomUUID()) ||
+          `client-${Math.random().toString(16).slice(2)}`;
+        localStorage.setItem(clientIdKey, generated);
+        return generated;
+      }
+
+      function updateStatus(stateName, detail) {
+        dotEl.dataset.state = stateName;
+        statusEl.textContent =
+          stateName === "connected"
+            ? "Connected"
+            : stateName === "connecting"
+              ? "Connecting"
+              : "Disconnected";
+        if (detail) {
+          lastEventEl.textContent = detail;
+        }
+      }
+
+      function setLabel(label) {
+        if (!label || label === state.label) {
+          return;
+        }
+        state.label = label;
+        labelEl.textContent = label;
+        if (state.socket && state.socket.readyState === WebSocket.OPEN) {
+          sendToDaemon({
+            type: "client_update",
+            clientId: state.clientId,
+            label,
+          });
+        }
+      }
+
+      function sendToDaemon(payload) {
+        if (!state.socket || state.socket.readyState !== WebSocket.OPEN) {
+          return false;
+        }
+        state.socket.send(JSON.stringify(payload));
+        return true;
+      }
+
+      function sendHello() {
+        sendToDaemon({
+          type: "hello",
+          role: "figma-ui",
+          clientId: state.clientId,
+          label: state.label,
+        });
+      }
+
+      function requestLabel() {
+        parent.postMessage({ pluginMessage: { type: "label_request" } }, "*");
+      }
+
+      function connect() {
+        if (state.socket) {
+          state.socket.onopen = null;
+          state.socket.onclose = null;
+          state.socket.onmessage = null;
+          state.socket.onerror = null;
+        }
+
+        updateStatus("connecting", `Connecting to ${WS_URL}`);
+        const socket = new WebSocket(WS_URL);
+        state.socket = socket;
+
+        socket.onopen = () => {
+          state.reconnectAttempt = 0;
+          updateStatus("connected", "Daemon connection active");
+          sendHello();
+          requestLabel();
+        };
+
+        socket.onclose = () => {
+          updateStatus("disconnected", "Daemon disconnected");
+          scheduleReconnect();
+        };
+
+        socket.onerror = () => {
+          updateStatus("disconnected", "Daemon connection error");
+          socket.close();
+        };
+
+        socket.onmessage = (event) => {
+          try {
+            const message = JSON.parse(event.data);
+            if (!message || typeof message !== "object") {
+              return;
+            }
+
+            if (message.type === "eval_request") {
+              lastEventEl.textContent = "Eval request received";
+              parent.postMessage(
+                {
+                  pluginMessage: {
+                    type: "eval_request",
+                    id: message.id,
+                    js: message.js,
+                  },
+                },
+                "*"
+              );
+            }
+          } catch (error) {
+            lastEventEl.textContent = "Invalid daemon message";
+          }
+        };
+      }
+
+      function scheduleReconnect() {
+        if (state.reconnectTimer) {
+          clearTimeout(state.reconnectTimer);
+        }
+
+        const attempt = state.reconnectAttempt;
+        const baseDelay = 250;
+        const maxDelay = 5000;
+        const jitter = Math.random() * 250;
+        const delay = Math.min(maxDelay, baseDelay * Math.pow(2, attempt)) + jitter;
+        state.reconnectAttempt += 1;
+        state.reconnectTimer = setTimeout(() => {
+          connect();
+        }, delay);
+        lastEventEl.textContent = `Retrying in ${Math.round(delay)}ms`;
+      }
+
+      window.onmessage = (event) => {
+        const message = event.data.pluginMessage;
+        if (!message || typeof message !== "object") {
+          return;
+        }
+
+        if (message.type === "label") {
+          setLabel(message.label);
+          return;
+        }
+
+        if (message.type === "eval_response") {
+          sendToDaemon({
+            type: "eval_response",
+            id: message.id,
+            ok: message.ok,
+            result: message.result,
+            error: message.error,
+            logs: message.logs,
+          });
+          lastEventEl.textContent = message.ok
+            ? "Eval response sent"
+            : "Eval error sent";
+        }
+      };
+
+      state.clientId = getOrCreateClientId();
+      clientIdEl.textContent = state.clientId;
+      labelEl.textContent = state.label;
+      parent.postMessage({ pluginMessage: { type: "ui_ready" } }, "*");
+      connect();
+    </script>
+  </body>
+</html>
