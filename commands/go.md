@@ -1,5 +1,4 @@
 ---
-name: go
 description: Evaluate JavaScript in Figma.
 disable-model-invocation: true
 argument-hint: "[--client <id|index>] [js]"

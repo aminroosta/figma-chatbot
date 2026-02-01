@@ -1,5 +1,4 @@
 ---
-name: setup
 description: Verify Bun and Figma dev plugin setup.
 disable-model-invocation: true
 allowed-tools: Bash, Glob
