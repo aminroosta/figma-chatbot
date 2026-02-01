@@ -39,10 +39,10 @@ claude --plugin-dir ./figma-chatbot
 1. Open Figma Desktop app with a design file open
 2. **Plugins → Development → Import plugin from manifest**
 3. Select `~/.claude/plugins/aminrsoota/figma-chatbot/chatbot/` (contains `manifest.json`)
-4. Press `Cmd+/`, search "chatbot", run to launch; keep the plugin window open
-5. In Claude Code CLI, use `/figma-chatbot:figma` to evaluate JS in the connected Figma client
+4. Press `Cmd+/`, search "chatbot", press enter to launch; keep the plugin window open
+5. In Claude Code CLI, use `/figma-chatbot:figma` to interact with Figma Desktop app.
 
-The plugin UI shows connection state, client ID, and current document/page label.
+The plugin UI shows connection state, client ID, and current document/page selected.
 
 ## Commands
 
