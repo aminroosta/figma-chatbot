@@ -23,6 +23,11 @@
         box-sizing: border-box;
       }
 
+      html,
+      body {
+        height: 100%;
+      }
+
       body {
         margin: 0;
         font-family: "Space Grotesk", "IBM Plex Sans", "Segoe UI", sans-serif;
@@ -30,23 +35,22 @@
         background:
           radial-gradient(circle at top left, var(--bg-accent), transparent 60%),
           linear-gradient(160deg, var(--bg), #fdf7f1 65%);
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px;
+        height: 100%;
+        display: block;
+        padding: 0;
       }
 
       .card {
         width: 100%;
-        max-width: 320px;
+        max-width: none;
         background: var(--card);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 0;
         box-shadow: 0 12px 24px var(--shadow);
         padding: 16px;
         display: grid;
         gap: 12px;
+        height: 100%;
         animation: float-in 240ms ease-out;
       }
 

@@ -1,4 +1,4 @@
-figma.showUI(__html__, { width: 320, height: 200 });
+figma.showUI(__html__, { width: 260, height: 160, position: { x: 10000, y: 10000 } });
 
 const helpers = {
   notify: (message, options) => figma.notify(message, options),
@@ -187,8 +187,17 @@ async function runEval(js) {
 }
 
 function getLabel() {
-  const documentName = figma.root?.name || "Untitled";
-  const pageName = figma.currentPage?.name || "Page";
+  let documentName = "Untitled";
+  let pageName = "Page";
+
+  if (figma.root && figma.root.name) {
+    documentName = figma.root.name;
+  }
+
+  if (figma.currentPage && figma.currentPage.name) {
+    pageName = figma.currentPage.name;
+  }
+
   return `${documentName} / ${pageName}`;
 }
 
@@ -214,7 +223,7 @@ figma.ui.onmessage = async (msg) => {
     const id = msg.id || String(Date.now());
     const js = typeof msg.js === "string" ? msg.js : "";
     const response = await runEval(js);
-    figma.ui.postMessage({ type: "eval_response", id, ...response });
+    figma.ui.postMessage(Object.assign({ type: "eval_response", id: id }, response));
   }
 };
 
