@@ -5,7 +5,7 @@
     {
       "name": "fig",
       "source": "./",
-      "description": "Execute JavaScript in Figma via local WebSocket bridge"
+      "description": "Interact With Figma Desktop App"
     }
   ]
 }
