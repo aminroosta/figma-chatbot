@@ -2,6 +2,8 @@
 
 A Claude Code plugin that lets Claude execute JavaScript directly in your Figma documents via a local WebSocket bridge.
 
+![figma-chatbot in action](help.png)
+
 ```
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
 │   Claude Code   │       │  figma-daemon   │       │  Figma Plugin   │
