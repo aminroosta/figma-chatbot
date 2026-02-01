@@ -171,7 +171,6 @@
     </main>
     <script>
       const WS_URL = "ws://localhost:7017/";
-      const clientIdKey = "figma-chatbot-client-id";
       const statusEl = document.querySelector("[data-status]");
       const dotEl = document.querySelector("[data-connection]");
       const clientIdEl = document.querySelector("[data-client-id]");
@@ -186,17 +185,8 @@
         clientId: null,
       };
 
-      function getOrCreateClientId() {
-        const stored = localStorage.getItem(clientIdKey);
-        if (stored) {
-          return stored;
-        }
-
-        const generated =
-          (window.crypto && crypto.randomUUID && crypto.randomUUID()) ||
-          `client-${Math.random().toString(16).slice(2)}`;
-        localStorage.setItem(clientIdKey, generated);
-        return generated;
+      function generateClientId() {
+        return Math.random().toString(36).slice(2, 10);
       }
 
       function updateStatus(stateName, detail) {
@@ -346,7 +336,7 @@
         }
       };
 
-      state.clientId = getOrCreateClientId();
+      state.clientId = generateClientId();
       clientIdEl.textContent = state.clientId;
       labelEl.textContent = state.label;
       parent.postMessage({ pluginMessage: { type: "ui_ready" } }, "*");
