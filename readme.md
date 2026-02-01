@@ -8,7 +8,7 @@ A Claude Code plugin that lets Claude execute JavaScript directly in your Figma 
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
 │   Claude Code   │       │  figma-daemon   │       │  Figma Plugin   │
 │                 │       │  (localhost)    │       │  (ui + sandbox) │
-│  /figma cmd ────┼──ws──►│                 │◄──ws──┼────────────────►│
+│  /figma cmd ────┼──ws──►│                 │◄──ws──┼─────────────────│
 │                 │       │   :7017         │       │   figma.* API   │
 └─────────────────┘       └─────────────────┘       └─────────────────┘
         │                         │                         │
@@ -19,7 +19,7 @@ A Claude Code plugin that lets Claude execute JavaScript directly in your Figma 
 
 ## Prerequisites
 
-- [Bun](https://bun.sh) runtime (macOS only for now)
+- [Bun](https://bun.sh) runtime
 
 ## Install
 
@@ -36,9 +36,9 @@ claude --plugin-dir ./figma-chatbot
 
 ## Figma Client Setup
 
-1. Open Figma Desktop (or browser with a design file open)
+1. Open Figma Desktop app with a design file open
 2. **Plugins → Development → Import plugin from manifest**
-3. Select the `chatbot/` folder inside this repo (contains `manifest.json`)
+3. Select `~/.claude/plugins/aminrsoota/figma-chatbot/chatbot/` (contains `manifest.json`)
 4. **Plugins → Development → figma-chatbot** to launch
 5. Keep the plugin window open while using `/figma`
 
