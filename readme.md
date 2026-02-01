@@ -41,7 +41,8 @@ claude --plugin-dir ./figma-chatbot
 
 1. Open Figma Desktop app with a design file open
 2. **Plugins → Development → Import plugin from manifest**
-3. Select `~/.claude/plugins/fig/fig/chatbot/` (contains `manifest.json`)
+3. Select `~/.claude/plugins/marketplaces/fig/chatbot/` (contains `manifest.json`)
+  - To see hidden folders like `~/.claude/` on MacOS, press `Cmd+Shift+.` .
 4. Press `Cmd+/`, search "chatbot", press enter to launch; keep the plugin window open
 5. In Claude Code CLI, use `/fig:go` to evaluate JS in Figma
 
@@ -79,8 +80,9 @@ See [docs/architecture.md](docs/architecture.md) for protocol details, data flow
 .claude-plugin/
   plugin.json                # Claude Code plugin manifest
   marketplace.json           # Marketplace catalog for distribution
-skills/setup/                # /fig:setup
-skills/go/                   # /fig:go
+commands/
+  setup.md                   # /fig:setup
+  go.md                      # /fig:go
 figma.ts                     # CLI client (status/start/stop/eval)
 figma-daemon.ts              # WebSocket server on 127.0.0.1:7017
 chatbot/                     # Figma dev plugin (manifest, ui.html, code.js)
