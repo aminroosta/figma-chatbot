@@ -1,0 +1,21 @@
+{
+  "name": "chatbot",
+  "id": "1599866796421087632",
+  "api": "1.0.0",
+  "main": "code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": "ui.html",
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ],
+    "devAllowedDomains": [
+      "ws://localhost:7017"
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "description": "Figma plugin for Claude Code bridge",
+  "main": "code.js",
+  "private": true
+}
