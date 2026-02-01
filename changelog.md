@@ -14,3 +14,8 @@
 - step 2
   - added figma-daemon websocket server on 127.0.0.1:7017 with pid/log lifecycle and role handshake registry
   - implemented eval routing with per-request timeouts, pending tracking, and status responses for cli clients
+
+- step 3
+  - added Claude Code plugin manifest plus skills for `/figma-setup` and `/figma` command flows
+  - captured bun detection/installer guidance, daemon status/start via `figma.ts`, and import instructions when no clients connect
+  - outlined JS snippet handling, multi-client targeting, and eval result/log reporting

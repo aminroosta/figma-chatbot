@@ -1,0 +1,5 @@
+{
+  "name": "figma-chatbot",
+  "description": "Claude Code commands for the local Figma bridge.",
+  "version": "0.1.0"
+}
